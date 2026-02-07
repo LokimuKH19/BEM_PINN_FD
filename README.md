@@ -68,6 +68,6 @@ The proposed method uses a PINN-based Blade Element Momentum (BEM) model to esti
 
 - The output of PINN model with hard constraints can accurately surrogate BEM operator with extremely few training data (e.g. 10s).
 
-- The LSTM model is trained using only short historical sequences (e.g., 50 s) but is able to generalize to longer horizons, indicating strong temporal consistency in the simulated dataset.
+- The LSTM model is trained using historical sequences (e.g., 50 s).
 
 - The PINN and LSTM outputs are time-aligned carefully to ensure physically meaningful residual computation.
