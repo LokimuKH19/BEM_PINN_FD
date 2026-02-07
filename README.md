@@ -16,6 +16,7 @@ The proposed method uses a PINN-based Blade Element Momentum (BEM) model to esti
 ├── freedom.py                # SCADA-like data loader and preprocessing
 ├── BEM_PINN.py               # PINN-based BEM aerodynamic load model
 ├── BEM_LSTM.py               # LSTM load prediction model and training script
+├── BEM_LSTM_legacy.py        # the LSTM program that we hope it to be, only if we have enough and representitive opration data generated from true turbine dynamics.
 ├── BEM_FaultDiagnosis.py     # Fault injection, monitoring, and detection
 ├── Result.py                 # Fault diagnosis result on 100 WTs of 100s operation data
 └── README.md
