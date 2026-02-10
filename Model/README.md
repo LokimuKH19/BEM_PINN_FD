@@ -2,6 +2,10 @@
 
 > Detailed description corresponding to the extended abstract "ICOPE-2026-51023".
 
+The whole workflow of this project (including the planning modules which has not yet been conducted):
+
+![workflow](./workflow.png)
+
 ## 🎯 The Principal of Wind Turbine Fault Detection
 
 For wind turbines, the rotor dynamics obeys the following angular momentum equation:
@@ -12,9 +16,12 @@ For wind turbines, the rotor dynamics obeys the following angular momentum equat
 
 where $T_{aero}$ is the torque at the aero-dynamics side, determined by the wind speed $V$, rotor speed $\Omega$ and the pitch angle $\theta$, while $T_{gen}, T_{in}$ denotes the torque of generator, and the dynamic loss (elastic, damping term etc.) respectively. 
 
-The wind turbines is controlled by adjusting the pitch angle $\theta$ to capture the wind energy at a certain wind speed , and the rotor speed $\Omega$ is determined according to the previous dynamic equation.
+The wind turbines is controlled by adjusting the pitch angle $\theta$ to capture the wind energy at a certain wind speed, and the rotor speed $\Omega$ is determined according to the previous dynamic equation.
 
 Therefore, if the system experiences mechanical failure which leads to deviation of the dynamic constants, such as the rotor inertia $J$, the rotor speed $\Omega$ would drift at the same wind speed $V$ and pitch angle $\theta$, and further influence the mechanical quantities. Consequently, our objective is to diagnose the fault from the Tower Thrust $F_t$ and the Torque at the aero-dynamic side $T_{aero}$ signals in real-time.
 
 ## ⚙ The Design of BEM-PINN
+
+To facilitate the real-time fault detection, first the of real-time computation of $F_t$ and $T_{aero}$ according to the signals from the sensors should be accessible. Traditional methods to calculate the wind turbine aero-dynamics with blade element momentum (BEM) model requires iterative calculation, which limits its speed of response. Therefore we conducted a PINN to surrogate BEM computation to accelerate this step, further enhancing the real-time monitoring of the system.
+
 
