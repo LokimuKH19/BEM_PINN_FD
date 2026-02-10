@@ -6,6 +6,8 @@ The whole workflow of this project (including the planning modules which has not
 
 ![workflow](./workflow.png)
 
+> *See in the paper "G Y, et al. "Neural network approaches for real-time fatigue life estimation by Surrogating the rainflow counting method." International Journal of Fatigue 197 (2025): 108941."
+
 ## 🎯 The Principal of Wind Turbine Fault Detection
 
 For wind turbines, the rotor dynamics obeys the following angular momentum equation:
