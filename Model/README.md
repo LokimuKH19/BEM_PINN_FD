@@ -83,7 +83,7 @@ By introducing the local solidity
 the indusible factors can be obtained by solving the fixed point problems
 
 ```math
- a = (\frac{4\sin ^2\varphi}{\sigma c_x}+1)^-1, b = (\frac{4\sin\varphi\cos\varphi}{\sigma c_t}-1)^-1,
+ a = (\frac{4\sin ^2\varphi}{\sigma c_x}+1)^{-1}, b = (\frac{4\sin\varphi\cos\varphi}{\sigma c_t}-1)^{-1},
 ```
 
 and subsequently calculate $F_t$ and $T_{aero}$ by integrating each corresponding element on the spanwise. Then the BEM model is closed.
