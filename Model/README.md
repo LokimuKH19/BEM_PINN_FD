@@ -118,7 +118,7 @@ Our reason is the inflow angle $\varphi$ in fact shares the similar direction wi
   0 \leq a \leq \frac{1}{2}, 0 \leq b \ll 1,
 ```
 
-Therefore, the $\varphi$ locates near the `phi0`. Further test indicates the ±30% offset basically satisfies the requirements, resulting in the continuous forward function:
+Therefore,  $\varphi$ locates near `phi0`. Further test indicates the ±30% offset basically satisfies the requirements, resulting in the continuous forward function:
 
 ```math
   \varphi = \arctan\left(\frac{V}{\Omega r}\right) \cdot \left(1 + 0.3\cdot\tanh(NN)\right)
