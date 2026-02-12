@@ -71,7 +71,7 @@ where $\rho, B, C(r)$ refer to the air density, the number of blades, and the ch
 Meanwhile in wind turbine dynamics, based on BEM model the 2 dynamic quantities can be represented in the following inducible factor form:
 
 ```math
-  \delta F_t = 4\pi\rho r V^2 a(1-a) \delta r, \delta T_{aero} = 4\pi\rho r^3\Omega V b(1-a) \delta r.
+  \delta F_t = 4\pi\rho r V^2 a(1-a) \delta r, -\delta T_{aero} = 4\pi\rho r^3\Omega V b(1-a) \delta r.
 ```
 
 By introducing the local solidity
@@ -92,4 +92,38 @@ Due to the previously mentioned fixed point problems requires several interation
 
 ### 📍 Integrate BEM with PINN
 
-We manage to reduce the time complexity of BEM into a single feedforward, leading us into surrogate modeling.
+We manage to reduce the time complexity of BEM into a single feedforward, leading us into surrogate modeling. At first we planned to use the model to surrogate the inducible factors $a, b$, but the performance is generally poor, driving us to give up this scheme. In fact, since the inducible factors vary across the spanwise, for neural networks the BEM model becomes an **operator learning** problem. The network should regress the functions $a(r), b(r)$ at different operating conditions $V,\Omega,\theta$ according to the coupled, highly non-linear fixed point problems:
+
+```math
+  a(r) = F_a\left(a(r),b(r);V,\Omega,\theta\right), b(r) = F_b\left(a(r),b(r);V,\Omega,\theta\right)
+```
+
+According to the wind turbine technical manual, only 17 blade elements is defined in each blade, using conventional operator learning strategies such us **DeepONET**, **FNO** and [similar methods](https://github.com/LokimuKH19/SymPhONIC/tree/main/WhyWeakFNO) for this discrete case seem to be excessive. Hence, we directly design the network which allocates ${a(r_i), b(r_i)}, i=1,...,17$ on each blade element. However, trivial solutions frequently occurs during the training. By analyzing the process of BEM, we found that the introduction of inducive factors is a compromise for represent the direction of the inflow in advance, and therefore construct the momentum relationships. Ultimately, we decided to let the NN represent the inflow angle $\varphi$, in order to reduce dimension of the output. Meanwhile, since the inflow-angle has clearer physical meaning, the feedforward step of the network can be applied with hard constraints. In the forward method of the class `InflowAngleNet` we wrote:
+
+```python
+def forward(self, x):
+  ...
+  raw = self.net(x)    # x:[[V, Omega, theta],...]
+  V = x[:, 0:1]
+  Omega = x[:, 1:2]
+  r = torch.tensor(R_, device=x.device).view(1, -1)
+  phi0 = torch.atan2(V, Omega * r)
+  phi = phi0 * (1.0 + 0.3 * torch.tanh(raw))
+  return phi
+```
+
+Our reason is the inflow angle $\varphi$ in fact shares the similar direction with `phi0` in the velocity triangle. Note that 
+
+```math
+  0 \leq a \leq \frac{1}{2}, 0 \leq b \ll 1,
+```
+
+Therefore, the $\varphi$ locates near the `phi0`. Further test indicates the ±30% offset basically satisfies the requirements, resulting in the continuous forward function:
+
+```math
+  phi = \arctan(\frac{V}{\Omega r}) \cdot (1 + 0.3\cdot\tanh(NN))
+```
+
+> The better way to adjust the parameter `0.3` is also make it as a learnable parameter which lies in $[0.1, 0.5]$.
+
+By defining the feedfoward as above, the trivial solution issue is generally overcome through limiting the output range.
