@@ -63,7 +63,7 @@ Therefore, the aerodynamic coefficients on both directions can be defined as:
 Under such definition, the unit aerodynamic thrust and torque on the blade are
 
 ```math
-  \delta F_t = \frac{1}{2}\rho B W^2 C(r) c_x \delta r, \delta T_{aero} = \frac{1}{2}\rho B W^2 C(r) c_t r \delta r,
+  \delta F_t = \frac{1}{2}\rho B W^2 C(r) c_x \delta r, \delta T_{aero} = \frac{1}{2}\rho B W^2 C(r) (-c_t) r \delta r,
 ```
 
 where $\rho, B, C(r)$ refer to the air density, the number of blades, and the chord length respectively.
@@ -71,7 +71,7 @@ where $\rho, B, C(r)$ refer to the air density, the number of blades, and the ch
 Meanwhile in wind turbine dynamics, based on BEM model the 2 dynamic quantities can be represented in the following inducible factor form:
 
 ```math
-  \delta F_t = 4\pi\rho r V^2 a(1-a) \delta r, -\delta T_{aero} = 4\pi\rho r^3\Omega V b(1-a) \delta r.
+  \delta F_t = 4\pi\rho r V^2 a(1-a) \delta r, \delta T_{aero} = 4\pi\rho r^3\Omega V b(1-a) \delta r.
 ```
 
 By introducing the local solidity
@@ -127,3 +127,46 @@ Therefore,  $\varphi$ locates near `phi0`. Further test indicates the ±30% offs
 > The better way to adjust the parameter `0.3` is also make it as a learnable parameter which lies in $[0.1, 0.5]$.
 
 By defining the feedfoward as above, the trivial solution issue is generally overcome through limiting the output range.
+
+Afterwards, by comparing the force element expressions written in both wind turbine dynamic form and that with inducible factors, the normalized residual of the momentum equations can be defined as:
+
+```math
+  R_F = \frac{BW^2Cc_x}{8\pi rV^2} - a(1-a), R_T = \frac{BW^2C(-c_t)}{8\pi r^2\Omega V} - b(1-a),
+```
+
+Then the physical loss is:
+
+```math
+  L_{phy} = \int_{r_h}^{r_s} \left[R_F^2(r)+R_T^2(r)\right]dr,
+```
+
+where $r_h, r_s$ are the radius of hub and shroud.
+
+Besides, in the actual code, we also offered two optional soft constraints which discribe the observed behavior of the $phi(r)$ curve, including the smoothness and convexity, aiming to offer more convergence foundation of the PINN model while enhancing the generalizability.
+
+```python
+def smoothness_loss(phi, dr):
+    """
+    phi: [B, Nr] tensor
+    dr:  [1, Nr] or scalar
+    Return: Average Smoothness Loss
+    """
+    # ∆²φ / ∆r²
+    d2phi = phi[:, 2:] - 2*phi[:, 1:-1] + phi[:, :-2]  # shape [B, Nr-2]
+    loss = torch.mean((d2phi / (dr[:,1:-1]**2))**2)
+    return loss
+
+# 倾向于下凸约束
+def concave_down_loss(phi):
+    """
+    phi: [B, Nr] tensor
+    Return: Average Down Concave Loss
+    """
+    # ∆²φ / ∆r²
+    d2phi = phi[:, 2:] - 2*phi[:, 1:-1] + phi[:, :-2]  # shape [B, Nr-2]
+    # DownConcave: phi <= 0, 
+    loss = torch.mean(torch.relu(d2phi))
+    return loss
+```
+
+## 📊 How to Diagnose the Faults via LSTM?
