@@ -168,7 +168,32 @@ def concave_down_loss(phi):
     return loss
 ```
 
-By applying the pure physics-driven modeling strategy, the performance on the $phi(r)$ curve:
+By applying the pure physics-driven modeling strategy, the performance on the $\phi(r)$ curve:
 
+![phi-purephy](./PurePhy500.png)
+
+> For the initial state of WT1, 500th epoch.
+
+and the prediction result, comparing with those calculated by BEM iteration:
+
+![phi-purephyd](./PurePhy500-58.png)
+
+> The $F_t, T_{aero}$ of all WTs at 58s, 500th epoch.
+
+Note that the performance is not satisfying enough, however, the model demonstrates the intense indications of generalizability (The ability to provide accurate prediction on the cases which do not belong to the training dataset). To enhance the accuracy, the small data, extracted from the first 10s of operation data, was applied on the sampling loss function:
+
+```math
+  L_{data} = \frac{1}{N}\sum_{i=0}^N \left\Vert \varphi_i^{PINN}(r)-\varphi_i^{BEM}\right\Vert _2^2
+```
+
+By integrating the sampling loss with the physics loss, the training performance on the whole dataset is finally acceptable, resulting in a satisfying surrogate model of BEM iteration.
+
+![phi-full](./FullConstraint500.png)
+
+> For the initial state of WT1, 500th epoch.
+
+![phi-full](./FullConstraint500-58.png)
+
+> The $F_t, T_{aero}$ of all WTs at 58s, 500th epoch.
 
 ## 📊 How to Diagnose the Faults via LSTM?
