@@ -176,7 +176,7 @@ By applying the pure physics-driven modeling strategy, the performance on the $\
 
 and the prediction result, comparing with those calculated by BEM iteration:
 
-![phi-purephyd](./PurePhy500-58.png)
+![phi-purephyd](./PurePhy500-58s.png)
 
 > The $F_t, T_{aero}$ of all WTs at 58s, 500th epoch.
 
