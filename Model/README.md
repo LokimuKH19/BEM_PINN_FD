@@ -196,4 +196,16 @@ By integrating the sampling loss with the physics loss, the training performance
 
 > The $F_t, T_{aero}$ of all WTs at 58s, 500th epoch.
 
+The relative error analysis of the finally deployed model `./inflow_angle_model_FullConstraints.pth`:
+
+|**Dataset**|$F_t$|$T_{aero}$|
+|:---:|---:|---:|
+|Training|0.82%|1.19%|
+|Testing|1.18%|1.56%|
+
 ## 📊 How to Diagnose the Faults via LSTM?
+Based on the advantage of learning from time series data, the LSTM is introduced for **Identifying the Modes** of the mechanical load on the wind turbines. In short,
+
+- PINN tells you what exactly the real-time load is;
+- LSTM tells you what is the mode of the load history.
+
