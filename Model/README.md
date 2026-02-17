@@ -6,7 +6,7 @@ The whole workflow of this project (including the planning modules which has not
 
 ![workflow](./workflow.png)
 
-> *See in the paper "G Y, et al. "Neural network approaches for real-time fatigue life estimation by Surrogating the rainflow counting method." International Journal of Fatigue 197 (2025): 108941."
+> *See in the [paper](https://doi.org/10.1016/j.ijfatigue.2025.108941)
 
 ## 🎯 The Principal of Wind Turbine Fault Detection
 
@@ -217,3 +217,38 @@ In ideal circumstances, the LSTM is trained with supervisory by incorporating th
 
 If fault occurs in the load sequence (The rotor speed $\Omega$ did not demonstrate a proper feedback result), the difference between the PINN and LSTM results would significantly increase, indicating that the fault diagnosis standard could origin from comparing 2 models.
 
+![FaultDiagnosis](./FD.png)
+
+> The relative error is apparently sensitive to faults. However, due to the risks of dividing 0, we don't use the relative error as the final metric.
+
+To quantify the probability of the dynamic system going wrong, define the following mapping within a given time window $T$ and an emperical threshold $\tau$:
+
+```math
+  P = \max\left(0, 2\cdot\mathrm{sigmoid}\left(\frac{1}{T}\sum_T\left(w_F\cdot\frac{F_t^{LSTM}-F_t^{PINN}}{\sigma_{F_t}}+w_T\cdot\frac{T_{aero}^{LSTM}-T_{aero}^{PINN}}{\sigma_{T_{aero}}}\right)\right)\right)
+```
+
+where the $w_F, w_T$ are weights, while $\sigma_{F_t},\sigma_{T_{aero}}$ are the standard deviation at both axial and tangential directions obtained from the original BEM data. Under such definition, if the simulated error is applied on the odd-numbered wind turbines (from WT1-WT100, the WT Index 00 refers to WT1, 01 for WT2, etc.), the final prediction result, as shown in the figure:
+
+![FinalResult](../Final.png)
+
+```python
+# Constants
+SEQ_LEN = 50  # Window, T
+...
+W_F = 0.3      # thrust weight
+W_T = 0.7     # torque weight (more sensitive)
+Tau = 0.95    # Threshold
+```
+
+> where the overall accuracy is 0.837, all constants were set as above.
+
+In other words, this strategy is validated on the given dataset. So far, we have reviewed the work we've carried out in our extended abstract.
+
+## 🤔 What's Next?
+
+To further enhance the practical application scope of this framework, these updates is planned:
+
+- Derive the real wind turbine system instead of using the simulated data from a black box model, and generate sufficient high precision dataset;
+- Update the LSTM judgement module into a classifier model, to provide more accurate diganosis of the certain fault types;
+- Incorporate the fault diagnosis with the fatigue monitoring system based on [RK4NN](https://doi.org/10.1016/j.ijfatigue.2025.108941);
+- Based on the whole monitoring information, design a real-time controlling strategy. 
