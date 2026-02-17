@@ -209,3 +209,11 @@ Based on the advantage of learning from time series data, the LSTM is introduced
 - PINN tells you what exactly the real-time load is;
 - LSTM tells you what is the mode of the load history.
 
+In ideal circumstances, the LSTM is trained with supervisory by incorporating the labeled data, which defines the type of the error in the sequential loads, resulting in a classifier model. However, since we failed to extract the wind turbine dynamic file (possibly conducted by MATLAB Simulink) of the official data, to emphasise our methodology, we settled for unsupervised learning strategies for alternative. In specific, an LSTM which tracks the variability patterns of each 50s sequence in trained to predict the $F_t, T_{aero}$ in the next time step (we had to suppose that the dataset refers to the occasions, where the wind turbines are running in a healthy condition):
+
+![track](./track.png)
+
+> This LSTM model obtained the relative errors of 2.27% and 2.96% in tracking $F_t, T_{aero}$ respectively.
+
+If fault occurs in the load sequence (The rotor speed $\Omega$ did not demonstrate a proper feedback result), the difference between the PINN and LSTM results would significantly increase, indicating that the fault diagnosis standard could origin from comparing 2 models.
+
