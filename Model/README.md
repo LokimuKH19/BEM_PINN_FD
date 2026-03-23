@@ -249,6 +249,6 @@ In other words, this strategy is validated on the given dataset. So far, we have
 To further enhance the practical application scope of this framework, these updates is planned:
 
 - Derive the real wind turbine system instead of using the simulated data from a black box model, and generate sufficient high precision dataset;
-- Update the LSTM judgement module into a classifier model, to provide more accurate diganosis of the certain fault types;
+- Update the LSTM judgement module into a classifier model, to provide more accurate diagnosis of the certain fault types;
 - Incorporate the fault diagnosis with the fatigue monitoring system based on [RK4NN](https://doi.org/10.1016/j.ijfatigue.2025.108941);
 - Based on the whole monitoring information, design a real-time controlling strategy. 
